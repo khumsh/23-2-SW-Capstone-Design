@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class VirtualScissors_Demo : MonoBehaviour
+public class VirtualScissors_Demo : MonoBehaviour, ILeftGesture
 {
     [SerializeField]
     private GestureDetection_Demo GD;
@@ -28,7 +28,10 @@ public class VirtualScissors_Demo : MonoBehaviour
     [HideInInspector]
     public bool IsCutting = false;
 
-#region Oculus Types
+    public GameObject target;
+    GameObject ILeftGesture.targetGO => target;
+
+    #region Oculus Types
 
     private OVRHand ovrHand;
 
@@ -38,8 +41,9 @@ public class VirtualScissors_Demo : MonoBehaviour
     private OVRBone boneToTrack;
     private OVRBone boneToTrack_2;
     private Vector3 closePlace;
-#endregion
-    
+
+    #endregion
+
     // Start is called before the first frame update
     void Awake() 
     {
@@ -79,20 +83,18 @@ public class VirtualScissors_Demo : MonoBehaviour
 
         if (boneToTrack_2 == null)
         {
-           
             boneToTrack_2 = ovrSkeleton_2.Bones
                 .Where(b => b.Id == OVRSkeleton.BoneId.Hand_Middle3)
                 .SingleOrDefault();
             if (boneToTrack != null)
                 finger_2 = boneToTrack_2.Transform.gameObject;
-           
         }
         ScissorsInteractionEnabler();
         ScissorsAnimation(); 
         if (IsCutting == true){
             sfx.Play();
             Debug.Log("cutting sound");
-        }        
+        }
     }
 
     private float DistanceCalculator(GameObject finger_2,GameObject finger_1)
@@ -115,6 +117,7 @@ public class VirtualScissors_Demo : MonoBehaviour
             {
                 cMin = cuttable;
                 minDist = dist;
+
             }
         }
         return (cMin,minDist);
