@@ -25,12 +25,12 @@ public class GestureDetection_Demo : MonoBehaviour
     public bool writeModeLogger = true;
     public TextMeshPro GestureLoggerLeft;
     public TextMeshPro GestureLoggerRight;
-    private List<OVRBone> fingerBonesLeft;
-    private List<OVRBone> fingerBonesRight;
+    public List<OVRBone> fingerBonesLeft { get; private set; }
+    public List<OVRBone> fingerBonesRight { get; private set; }
     private Gesture previousGestureLeft;
     private Gesture previousGestureRight;
-    private bool thereAreBonesLeft = false;
-    private bool thereAreBonesRight = false;
+    public bool thereAreBonesLeft { get; private set; } = false;
+    public bool thereAreBonesRight { get; private set; } = false;
     private GameObject lefthand;
     private GameObject righthand;
     //Hand Interface
@@ -184,7 +184,8 @@ public class GestureDetection_Demo : MonoBehaviour
 
         if (thereAreBonesRight)
         {
-            //should not put it in save, 
+            //sh
+            //ould not put it in save, 
             //or fingerBones will have nth when you don't press space
             fingerBonesRight = new List<OVRBone>(skeletonRight.Bones);//added
             if (debugMode && Input.GetKeyDown(KeyCode.F2))
@@ -299,6 +300,7 @@ public class GestureDetection_Demo : MonoBehaviour
             float adaptivethreshold;
             if (gesture.name == "Joystick"){
                 adaptivethreshold = 0.06f;
+                // 조이스틱은 손가락 잡고 움직일 때도 인식해야 하니까 임계값 좀 더 느슨하게
             }
             else {
                 adaptivethreshold = threshold;
@@ -340,9 +342,9 @@ public class GestureDetection_Demo : MonoBehaviour
             float sumDistance = 0;
             bool isDiscarded = false;
             float adaptivethreshold;
-            if (gesture.name == "Joystick")
+            if (gesture.name == "Run")
             {
-                adaptivethreshold = 0.06f;
+                adaptivethreshold = 0.1f;
             }
             else
             {
