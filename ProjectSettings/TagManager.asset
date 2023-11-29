@@ -23,6 +23,8 @@ TagManager:
   - up
   - smartphone
   - ball
+  - CinemachineTarget
+  - humanAvatar
   layers:
   - Default
   - TransparentFX
@@ -32,7 +34,7 @@ TagManager:
   - UI
   - CameraHD
   - Hands
-  - 
+  - Ground
   - 
   - 
   - 

@@ -41,6 +41,8 @@ public class GestureDetection_Demo : MonoBehaviour
 
     private GameObject smartphone;
     private GameObject ball;
+    private GameObject humanAvatar;
+
     //Right
     private GameObject goGO;
 
@@ -76,6 +78,7 @@ public class GestureDetection_Demo : MonoBehaviour
 
         smartphone = GameObject.FindGameObjectsWithTag("smartphone")[0];
         ball = GameObject.FindGameObjectsWithTag("ball")[0];
+        humanAvatar = GameObject.FindGameObjectsWithTag("humanAvatar")[0];
 
         //Right
         goGO = GameObject.FindGameObjectsWithTag("go")[0];
@@ -155,6 +158,9 @@ public class GestureDetection_Demo : MonoBehaviour
                         break;
                     case "Ball":
                         targetGO = ball.GetComponent<ILeftGesture>().targetGO;
+                        break;
+                    case "HumanAvatar":
+                        targetGO = humanAvatar.GetComponent<ILeftGesture>().targetGO;
                         break;
                 }
             }
@@ -333,7 +339,6 @@ public class GestureDetection_Demo : MonoBehaviour
     {
         Gesture currentgesture = new Gesture();
         float currentMin = Mathf.Infinity;
-        int testk = 0;
 
         foreach (var gesture in gesturesRight)
         {

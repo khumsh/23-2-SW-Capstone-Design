@@ -1,3 +1,5 @@
+using OculusSampleFramework;
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -13,19 +15,25 @@ public class RightHand_Run : MonoBehaviour
 
     private string currentInterface;
 
-    int count = 1;
-    int c = 0;
+    private Vector3 index_previousVelocity; // 이전 프레임의 속도
+    private Vector3 index_currentVelocity; // 현재 프레임의 속도
 
-    Vector2 index_0;
-    Vector2 index_1;
+    private Vector3 index_previousPosition; // 이전 프레임의 위치
+    private Vector3 index_currentPosition; // 현재 프레임의 위치
 
-    Vector2 index_v;
+    private Vector3 index_acceleration; // 가속도
 
-    Vector2 middle_0;
-    Vector2 middle_1;
+    private Vector3 middle_previousVelocity; // 이전 프레임의 속도
+    private Vector3 middle_currentVelocity; // 현재 프레임의 속도
 
-    Vector2 middle_v;
+    private Vector3 middle_previousPosition; // 이전 프레임의 위치
+    private Vector3 middle_currentPosition; // 현재 프레임의 위치
 
+    private Vector3 middle_acceleration; // 가속도
+
+    private float deltaTime; // 프레임 간의 시간 차이
+
+    public TextMeshPro rotText;
     void Update()
     {
         currentInterface = GD.RecognizeRight().name;
@@ -38,76 +46,109 @@ public class RightHand_Run : MonoBehaviour
                 // 구현
                 if (!GD.thereAreBonesRight) return;
 
-                float max = Mathf.Max(index_v.magnitude * 100, middle_v.magnitude * 100);
+                // 검지, 중지 끝 위치
+                Vector3 indexPos = GD.skeletonRight.Bones[8].Transform.position;
+                Vector3 middlePos = GD.skeletonRight.Bones[11].Transform.position;
 
-                if (max >= 0.8f && max < 1.2f)
+                // 현재 프레임의 속도와 위치를 갱신
+                // 검지
+                index_currentVelocity = (indexPos - index_previousPosition) / Time.deltaTime;
+                index_currentPosition = indexPos;
+                // 중지
+                middle_currentVelocity = (middlePos - middle_previousPosition) / Time.deltaTime;
+                middle_currentPosition = middlePos;
+
+                // 프레임 간의 시간 차이
+                deltaTime = Time.deltaTime;
+
+                // 가속도 계산
+                // 검지
+                index_acceleration = (index_currentVelocity - index_previousVelocity) / deltaTime;
+                // 중지
+                middle_acceleration = (middle_currentVelocity - middle_previousVelocity) / deltaTime;
+
+                velocityText.text = $"Acceleration : {index_acceleration.magnitude}, {middle_acceleration.magnitude}";
+
+                // 가속도 값을 사용하여 원하는 작업 수행
+                float maxAccel = Mathf.Max(index_acceleration.magnitude, middle_acceleration.magnitude);
+                float speed = maxAccel * 0.01f;
+
+                if (speed > 0.05f)
                 {
-                    targetGO.transform.position += Vector3.forward * 0.05f * Time.deltaTime;
+                    if (targetGO.TryGetComponent(out StarterAssetsInputs input))
+                    {
+                        input.sprint = (speed > 0.4f) ? true : false;
+
+                        //input.move = Vector2.zero;
+
+                        // 회전
+                        var leftHand = HandsManager.Instance.LeftHand;
+                        Vector3 leftHandRotation = leftHand.transform.rotation.eulerAngles;
+                        float t = 30;
+
+                        bool isLeft = (leftHandRotation.x > 360 - t || leftHandRotation.x < t)
+                                    && (leftHandRotation.z > 360 - t || leftHandRotation.z < t);
+                        bool isRight = (leftHandRotation.x > 360 - t || leftHandRotation.x < t)
+                                    && (leftHandRotation.z > 180 - t || leftHandRotation.z < 180 + t);
+
+                        if (isLeft) // 왼쪽
+                        {
+                            input.move += Vector2.left;
+                        }
+                        else if (isRight) // 오른쪽
+                        {
+                            input.move += Vector2.right;
+                        }
+                        else
+                        {
+                            if (leftHandRotation.x > leftHandRotation.z)
+                                input.move += Vector2.up;
+                            else
+                                input.move += Vector2.down;
+
+                        }
+
+                        rotText.text = $"rot : {leftHandRotation}\n" +
+                            $"isLeft : {isLeft}, isRight : {isRight}";
+                    }
+                    else
+                        targetGO.transform.position += Vector3.forward * speed * Time.deltaTime;
+                
+                    
                 }
-                else if (max >= 1.2f)
+                else
                 {
-                    targetGO.transform.position += Vector3.forward * 0.15f * Time.deltaTime;
+                    if (targetGO.TryGetComponent(out StarterAssetsInputs input))
+                    {
+                        input.sprint = false;
+                        input.move = Vector2.zero;
+                    }
                 }
-                
-                
+                    
+
+                // 이전 프레임의 속도와 위치를 현재 값으로 갱신
+                // 검지
+                index_previousVelocity = index_currentVelocity;
+                index_previousPosition = index_currentPosition;
+                // 중지
+                middle_previousVelocity = middle_currentVelocity;
+                middle_previousPosition = middle_currentPosition;
+
+
+               
 
             }
-            //velocityText.text = $"index v : {index_v.magnitude * 100} / middle v : {middle_v.magnitude * 100}";
         }
         else
         {
+            if (targetGO != null && targetGO.TryGetComponent(out StarterAssetsInputs input))
+            {
+                input.sprint = false;
+                input.move = Vector2.zero;
+            }
             targetGO = null;
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (!GD.thereAreBonesRight) return;
 
-        // velocity 측정
-
-        if (count == 1 && c % 19 == 0)
-        {
-            c = 0;
-
-            // 검지 끝
-            index_0 = GD.skeletonRight.Bones[8].Transform.position;
-
-            // 중지 끝
-            middle_0 = GD.skeletonRight.Bones[11].Transform.position;
-
-            bool isValid = index_0 != null && index_1 != null && middle_0 != null && middle_1 != null;
-            if (isValid)
-            {
-                index_v = index_0 - index_1;
-                //index_v = index_0;
-                middle_v = middle_0 - middle_1;
-                //middle_v = middle_0;
-            }
-
-            count *= -1;
-            
-        }
-        else if (count == -1 && c % 19 == 0)
-        {
-            c = 0;
-
-            // 검지 끝
-            index_1 = GD.skeletonRight.Bones[8].Transform.position;
-
-            // 중지 끝
-            middle_1 = GD.skeletonRight.Bones[11].Transform.position;
-
-            bool isValid = index_0 != null && index_1 != null && middle_0 != null && middle_1 != null;
-            if (isValid)
-            {
-                index_v = index_1 - index_0;
-                middle_v = middle_1 - middle_0;
-            }
-
-            count *= -1;
-        }
-
-        c++;
-    }
 }
