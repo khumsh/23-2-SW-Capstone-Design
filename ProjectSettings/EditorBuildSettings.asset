@@ -36,7 +36,7 @@ EditorBuildSettings:
     path: Assets/Example Applications/IoT/IoT.unity
     guid: 1f0516c3e5b29564b9de72b23ad937ee
   - enabled: 1
-    path: Assets/Scenes/Demo_CHI.unity
+    path: Assets/Scenes/Demo.unity
     guid: c4870ac21cff33b4096477f9ca0ae3cd
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 940b4bad926ad204e843829a0ab72271,

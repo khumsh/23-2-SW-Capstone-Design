@@ -7,9 +7,23 @@ using TMPro;
 
 public interface ILeftGesture
 {
+    public string targetName { get; }
     public GameObject targetGO { get; }
 }
 
+public enum LeftHandTargets
+{
+    SmartPhone,
+    Ball,
+    HumanAvatar
+}
+
+public enum LeftGestureMode
+{
+    Normal, // 일반 모드 (왼손 제스처에 따라 타겟 변경)
+    TargetSetting, // 타겟 세팅 모드 (왼손 제스처를 오래 지속하면 해당 제스처를 타겟으로 TargetHold 모드로 변경)
+    TargetHold, // 타겟 세팅 모드를 통해 타겟이 홀드된 모드 (취소 제스처를 통해 Normal 모드로 변경)
+}
 
 public class GestureDetection_Demo : MonoBehaviour
 {
@@ -34,7 +48,13 @@ public class GestureDetection_Demo : MonoBehaviour
     private GameObject lefthand;
     private GameObject righthand;
     //Hand Interface
+    [Header("Left Hand Targets")]
+    public GameObject[] leftHandTargets;
+    public Dictionary<string, ILeftGesture> leftHandTargetsDic;
+
     //Left
+    LeftGestureMode leftGestureMode = LeftGestureMode.Normal;
+
     private GameObject joystick;
     private GameObject thumbpiano;
     private GameObject scissors;
@@ -44,13 +64,17 @@ public class GestureDetection_Demo : MonoBehaviour
     private GameObject humanAvatar;
 
     //Right
-    private GameObject goGO;
 
     private float startTime = 0f;
     private float timer = 0f;
     public float holdTime = 0.2f;
 
+    private float changeModeTime = 2.5f;
+    private float modeTimer;
+
+    public GameObject MyTargetGO { get; set; }
     public GameObject targetGO;
+    public string targetName;
    
     private Dictionary<string, GameObject> gesturedictLeft;
     private Dictionary<string, GameObject> gesturedictRight;
@@ -71,17 +95,31 @@ public class GestureDetection_Demo : MonoBehaviour
 
         //Hand Interface
         //Left
+        // 타겟 넣기
+        foreach(GameObject t in leftHandTargets)
+        {
+            ILeftGesture iLeft = t.GetComponent<ILeftGesture>();
+
+            if (iLeft != null)
+            {
+                string targetName = iLeft.targetName;
+                if (!leftHandTargetsDic.ContainsKey(targetName))
+                {
+                    leftHandTargetsDic.Add(targetName, iLeft);
+                }
+            }
+            
+        }
+
+        // temp
+        MyTargetGO = leftHandTargetsDic[LeftHandTargets.HumanAvatar.ToString()].targetGO;
+
         joystick = GameObject.FindGameObjectsWithTag("joystick")[0];
         thumbpiano = GameObject.FindGameObjectsWithTag("thumbpiano")[0];
         scissors = GameObject.FindGameObjectsWithTag("scissors")[0];
         // assets = GameObject.FindGameObjectsWithTag("assets");
 
-        smartphone = GameObject.FindGameObjectsWithTag("smartphone")[0];
-        ball = GameObject.FindGameObjectsWithTag("ball")[0];
-        humanAvatar = GameObject.FindGameObjectsWithTag("humanAvatar")[0];
-
-        //Right
-        goGO = GameObject.FindGameObjectsWithTag("go")[0];
+        modeTimer = changeModeTime;
 
         gesturedictLeft = new Dictionary<string, GameObject>()
         {
@@ -92,10 +130,6 @@ public class GestureDetection_Demo : MonoBehaviour
             {"Ball", ball}
         };
 
-        gesturedictRight = new Dictionary<string, GameObject>()
-        {
-            {"Go", goGO}
-        };
 
         foreach(var ges in gesturedictLeft)
             //ges.Value.SetActive(false);
@@ -148,21 +182,80 @@ public class GestureDetection_Demo : MonoBehaviour
                 }
                 previousGestureLeft = currentGesture;
 
-                switch(currentGesture.name) 
+
+                switch(leftGestureMode)
                 {
-                    case "Scissors":
-                        targetGO = scissors.GetComponent<ILeftGesture>().targetGO;
+                    case LeftGestureMode.Normal:
+                        if (currentGesture.name == "SetTarget")
+                        {
+                            if (modeTimer > 0)
+                                modeTimer -= Time.deltaTime;
+                            else if (modeTimer <= 0)
+                            {
+                                modeTimer = changeModeTime;
+                                leftGestureMode = LeftGestureMode.TargetSetting;
+                                break;
+                            }
+                        }
+                        else modeTimer = changeModeTime;
+
+                        if (leftHandTargetsDic.ContainsKey(currentGesture.name))
+                        {
+                            targetName = leftHandTargetsDic[currentGesture.name].targetName;
+                            targetGO = leftHandTargetsDic[currentGesture.name].targetGO;
+                        }
                         break;
-                    case "SmartPhone":
-                        targetGO = smartphone.GetComponent<ILeftGesture>().targetGO;
+                    case LeftGestureMode.TargetSetting:
+                        if (leftHandTargetsDic.ContainsKey(currentGesture.name))
+                        {
+                            if (modeTimer > 0)
+                                modeTimer -= Time.deltaTime;
+                            else if (modeTimer <= 0)
+                            {
+                                modeTimer = changeModeTime;
+                                targetName = leftHandTargetsDic[currentGesture.name].targetName;
+                                targetGO = leftHandTargetsDic[currentGesture.name].targetGO;
+                                leftGestureMode = LeftGestureMode.TargetHold;
+                                break;
+                            }
+                                
+                        }
+                        else modeTimer = changeModeTime;
+
                         break;
-                    case "Ball":
-                        targetGO = ball.GetComponent<ILeftGesture>().targetGO;
-                        break;
-                    case "HumanAvatar":
-                        targetGO = humanAvatar.GetComponent<ILeftGesture>().targetGO;
+                    case LeftGestureMode.TargetHold:
+                        if (currentGesture.name == "CancelTarget")
+                        {
+                            if (modeTimer > 0)
+                                modeTimer -= Time.deltaTime;
+                            else if (modeTimer <= 0)
+                            {
+                                modeTimer = changeModeTime;
+                                leftGestureMode = LeftGestureMode.Normal;
+                                break;
+                            }
+                        }
+                        else modeTimer = changeModeTime;
+
                         break;
                 }
+
+
+                //switch(currentGesture.name) 
+                //{
+                //    case "Scissors":
+                //        targetGO = scissors.GetComponent<ILeftGesture>().targetGO;
+                //        break;
+                //    case "SmartPhone":
+                //        targetGO = smartphone.GetComponent<ILeftGesture>().targetGO;
+                //        break;
+                //    case "Ball":
+                //        targetGO = ball.GetComponent<ILeftGesture>().targetGO;
+                //        break;
+                //    case "HumanAvatar":
+                //        targetGO = humanAvatar.GetComponent<ILeftGesture>().targetGO;
+                //        break;
+                //}
             }
             else
             {

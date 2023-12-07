@@ -29,6 +29,8 @@ public class VirtualScissors_Demo : MonoBehaviour, ILeftGesture
     public bool IsCutting = false;
 
     public GameObject target;
+
+    public string targetName => "Scissors";
     GameObject ILeftGesture.targetGO => target;
 
     #region Oculus Types

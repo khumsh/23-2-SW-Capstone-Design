@@ -41,7 +41,7 @@ public class RightHand_Run : MonoBehaviour
 
         if (currentInterface == "Run")
         {
-            if (targetGO != null)
+            if (targetGO != null && GD.targetName != "We")
             {
                 // 구현
                 if (!GD.thereAreBonesRight) return;
@@ -75,16 +75,17 @@ public class RightHand_Run : MonoBehaviour
 
                 if (speed > 0.05f)
                 {
-                    if (targetGO.TryGetComponent(out StarterAssetsInputs input))
+                    if (GD.targetName == LeftHandTargets.HumanAvatar.ToString() 
+                        && targetGO.TryGetComponent(out StarterAssetsInputs input))
                     {
-                        input.sprint = (speed > 0.4f) ? true : false;
+                        input.sprint = (speed > 0.35f) ? true : false;
 
                         //input.move = Vector2.zero;
 
                         // 회전
                         var leftHand = HandsManager.Instance.LeftHand;
                         Vector3 leftHandRotation = leftHand.transform.rotation.eulerAngles;
-                        float t = 30;
+                        float t = 40;
 
                         bool isLeft = (leftHandRotation.x > 360 - t || leftHandRotation.x < t)
                                     && (leftHandRotation.z > 360 - t || leftHandRotation.z < t);
@@ -134,14 +135,13 @@ public class RightHand_Run : MonoBehaviour
                 middle_previousVelocity = middle_currentVelocity;
                 middle_previousPosition = middle_currentPosition;
 
-
-               
-
             }
         }
         else
         {
-            if (targetGO != null && targetGO.TryGetComponent(out StarterAssetsInputs input))
+            if (targetGO != null
+                && GD.targetName == LeftHandTargets.HumanAvatar.ToString()
+                && targetGO.TryGetComponent(out StarterAssetsInputs input))
             {
                 input.sprint = false;
                 input.move = Vector2.zero;

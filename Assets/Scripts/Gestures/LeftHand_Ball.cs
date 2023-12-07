@@ -6,5 +6,6 @@ public class LeftHand_Ball : MonoBehaviour, ILeftGesture
 {
     public GameObject target;
 
+    public string targetName => LeftHandTargets.Ball.ToString();
     public GameObject targetGO => target;
 }

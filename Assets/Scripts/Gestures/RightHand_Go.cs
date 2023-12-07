@@ -17,8 +17,17 @@ public class RightHand_Go : MonoBehaviour
 
         if (currentInterface == "Go")
         {
-            if (targetGO != null)
+            if (GD.targetName == "We")
+            {
+                foreach (GameObject t in GD.leftHandTargets)
+                {
+                    t.transform.position += Vector3.forward * 0.3f * Time.deltaTime;
+                }
+
+            }
+            else if (targetGO != null)
                 targetGO.transform.position += Vector3.forward * 0.3f * Time.deltaTime;
+            
         }
         else
         {
