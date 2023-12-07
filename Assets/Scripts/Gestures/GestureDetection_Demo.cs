@@ -56,6 +56,7 @@ public class GestureDetection_Demo : MonoBehaviour
     //Left
     LeftGestureMode leftGestureMode = LeftGestureMode.Normal;
     public TextMeshPro modeText;
+    public Slider modeSlider;
 
     private GameObject joystick;
     private GameObject thumbpiano;
@@ -122,6 +123,7 @@ public class GestureDetection_Demo : MonoBehaviour
         // assets = GameObject.FindGameObjectsWithTag("assets");
 
         modeText.text = leftGestureMode.ToString();
+        modeSlider.value = 0;
         modeTimer = changeModeTime;
 
         gesturedictLeft = new Dictionary<string, GameObject>()
@@ -192,10 +194,14 @@ public class GestureDetection_Demo : MonoBehaviour
                         if (currentGesture.name == "SetTarget")
                         {
                             if (modeTimer > 0)
+                            {
                                 modeTimer -= Time.deltaTime;
+                                modeSlider.value = 1 - (modeTimer/changeModeTime);
+                            }
                             else if (modeTimer <= 0)
                             {
                                 modeTimer = changeModeTime;
+                                modeSlider.value = 0;
                                 leftGestureMode = LeftGestureMode.TargetSetting;
                                 modeText.text = leftGestureMode.ToString();
                                 break;
@@ -213,10 +219,14 @@ public class GestureDetection_Demo : MonoBehaviour
                         if (leftHandTargetsDic.ContainsKey(currentGesture.name))
                         {
                             if (modeTimer > 0)
+                            {
                                 modeTimer -= Time.deltaTime;
+                                modeSlider.value = 1 - (modeTimer / changeModeTime);
+                            }
                             else if (modeTimer <= 0)
                             {
                                 modeTimer = changeModeTime;
+                                modeSlider.value = 0;
                                 targetName = leftHandTargetsDic[currentGesture.name].targetName;
                                 targetGO = leftHandTargetsDic[currentGesture.name].targetGO;
                                 leftGestureMode = LeftGestureMode.TargetHold;
@@ -232,10 +242,14 @@ public class GestureDetection_Demo : MonoBehaviour
                         if (currentGesture.name == "CancelTarget")
                         {
                             if (modeTimer > 0)
+                            {
                                 modeTimer -= Time.deltaTime;
+                                modeSlider.value = 1 - (modeTimer / changeModeTime);
+                            }
                             else if (modeTimer <= 0)
                             {
                                 modeTimer = changeModeTime;
+                                modeSlider.value = 0;
                                 leftGestureMode = LeftGestureMode.Normal;
                                 modeText.text = leftGestureMode.ToString();
                                 break;
