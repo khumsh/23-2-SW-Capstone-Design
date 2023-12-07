@@ -39,6 +39,7 @@ public class GestureDetection_Demo : MonoBehaviour
     public bool writeModeLogger = true;
     public TextMeshPro GestureLoggerLeft;
     public TextMeshPro GestureLoggerRight;
+    
     public List<OVRBone> fingerBonesLeft { get; private set; }
     public List<OVRBone> fingerBonesRight { get; private set; }
     private Gesture previousGestureLeft;
@@ -54,6 +55,7 @@ public class GestureDetection_Demo : MonoBehaviour
 
     //Left
     LeftGestureMode leftGestureMode = LeftGestureMode.Normal;
+    public TextMeshPro modeText;
 
     private GameObject joystick;
     private GameObject thumbpiano;
@@ -119,6 +121,7 @@ public class GestureDetection_Demo : MonoBehaviour
         scissors = GameObject.FindGameObjectsWithTag("scissors")[0];
         // assets = GameObject.FindGameObjectsWithTag("assets");
 
+        modeText.text = leftGestureMode.ToString();
         modeTimer = changeModeTime;
 
         gesturedictLeft = new Dictionary<string, GameObject>()
@@ -194,6 +197,7 @@ public class GestureDetection_Demo : MonoBehaviour
                             {
                                 modeTimer = changeModeTime;
                                 leftGestureMode = LeftGestureMode.TargetSetting;
+                                modeText.text = leftGestureMode.ToString();
                                 break;
                             }
                         }
@@ -216,6 +220,7 @@ public class GestureDetection_Demo : MonoBehaviour
                                 targetName = leftHandTargetsDic[currentGesture.name].targetName;
                                 targetGO = leftHandTargetsDic[currentGesture.name].targetGO;
                                 leftGestureMode = LeftGestureMode.TargetHold;
+                                modeText.text = leftGestureMode.ToString();
                                 break;
                             }
                                 
@@ -232,6 +237,7 @@ public class GestureDetection_Demo : MonoBehaviour
                             {
                                 modeTimer = changeModeTime;
                                 leftGestureMode = LeftGestureMode.Normal;
+                                modeText.text = leftGestureMode.ToString();
                                 break;
                             }
                         }
@@ -240,22 +246,6 @@ public class GestureDetection_Demo : MonoBehaviour
                         break;
                 }
 
-
-                //switch(currentGesture.name) 
-                //{
-                //    case "Scissors":
-                //        targetGO = scissors.GetComponent<ILeftGesture>().targetGO;
-                //        break;
-                //    case "SmartPhone":
-                //        targetGO = smartphone.GetComponent<ILeftGesture>().targetGO;
-                //        break;
-                //    case "Ball":
-                //        targetGO = ball.GetComponent<ILeftGesture>().targetGO;
-                //        break;
-                //    case "HumanAvatar":
-                //        targetGO = humanAvatar.GetComponent<ILeftGesture>().targetGO;
-                //        break;
-                //}
             }
             else
             {
