@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
+using System.ComponentModel;
+using Unity.Collections;
+using OculusSampleFramework;
 
 public interface ILeftGesture
 {
@@ -51,16 +54,12 @@ public class GestureDetection_Demo : MonoBehaviour
     //Hand Interface
     [Header("Left Hand Targets")]
     public GameObject[] leftHandTargets;
-    public Dictionary<string, ILeftGesture> leftHandTargetsDic;
+    public Dictionary<string, ILeftGesture> leftHandTargetsDic = new Dictionary<string, ILeftGesture>();
 
     //Left
     LeftGestureMode leftGestureMode = LeftGestureMode.Normal;
     public TextMeshPro modeText;
     public Slider modeSlider;
-
-    private GameObject joystick;
-    private GameObject thumbpiano;
-    private GameObject scissors;
 
     private GameObject smartphone;
     private GameObject ball;
@@ -77,10 +76,8 @@ public class GestureDetection_Demo : MonoBehaviour
 
     public GameObject MyTargetGO { get; set; }
     public GameObject targetGO;
-    public string targetName;
+    [HideInInspector] public string targetName;
    
-    private Dictionary<string, GameObject> gesturedictLeft;
-    private Dictionary<string, GameObject> gesturedictRight;
     // private GameObject[] assets;
     private string currentInterface;
 
@@ -117,28 +114,11 @@ public class GestureDetection_Demo : MonoBehaviour
         // temp
         MyTargetGO = leftHandTargetsDic[LeftHandTargets.HumanAvatar.ToString()].targetGO;
 
-        joystick = GameObject.FindGameObjectsWithTag("joystick")[0];
-        thumbpiano = GameObject.FindGameObjectsWithTag("thumbpiano")[0];
-        scissors = GameObject.FindGameObjectsWithTag("scissors")[0];
-        // assets = GameObject.FindGameObjectsWithTag("assets");
 
-        modeText.text = leftGestureMode.ToString();
+        modeText.text = $"Mode : {leftGestureMode}";
         modeSlider.value = 0;
         modeTimer = changeModeTime;
 
-        gesturedictLeft = new Dictionary<string, GameObject>()
-        {
-            {"Joystick", joystick},
-            {"ThumbPiano", thumbpiano},
-            {"Scissors", scissors},
-            {"Smartphone", smartphone},
-            {"Ball", ball}
-        };
-
-
-        foreach(var ges in gesturedictLeft)
-            //ges.Value.SetActive(false);
-            ChildrenRendering(ges.Value, false);
         lefthand.GetComponent<Renderer>().enabled = true;
         righthand.GetComponent<Renderer>().enabled = true;
         // RelatedAssetsRendering();
@@ -163,7 +143,7 @@ public class GestureDetection_Demo : MonoBehaviour
             //should not put it in save, 
             //or fingerBones will have nth when you don't press space
             fingerBonesLeft= new List<OVRBone>(skeletonLeft.Bones); //added
-            if(debugMode && Input.GetKeyDown(KeyCode.F1))
+            if(debugMode && UnityEngine.Input.GetKeyDown(KeyCode.F1))
             {
                 Save();
             }
@@ -203,7 +183,7 @@ public class GestureDetection_Demo : MonoBehaviour
                                 modeTimer = changeModeTime;
                                 modeSlider.value = 0;
                                 leftGestureMode = LeftGestureMode.TargetSetting;
-                                modeText.text = leftGestureMode.ToString();
+                                modeText.text = $"Mode : {leftGestureMode}";
                                 break;
                             }
                         }
@@ -227,10 +207,12 @@ public class GestureDetection_Demo : MonoBehaviour
                             {
                                 modeTimer = changeModeTime;
                                 modeSlider.value = 0;
+
                                 targetName = leftHandTargetsDic[currentGesture.name].targetName;
                                 targetGO = leftHandTargetsDic[currentGesture.name].targetGO;
+
                                 leftGestureMode = LeftGestureMode.TargetHold;
-                                modeText.text = leftGestureMode.ToString();
+                                modeText.text = $"Mode : {leftGestureMode}, Target : {targetName}";
                                 break;
                             }
                                 
@@ -251,9 +233,40 @@ public class GestureDetection_Demo : MonoBehaviour
                                 modeTimer = changeModeTime;
                                 modeSlider.value = 0;
                                 leftGestureMode = LeftGestureMode.Normal;
-                                modeText.text = leftGestureMode.ToString();
+                                modeText.text = $"Mode : {leftGestureMode}";
                                 break;
                             }
+                        }
+                        else if (currentGesture.name == "SetTarget")
+                        {
+                            // 회전
+                            var leftHand = HandsManager.Instance.LeftHand;
+                            Vector3 leftHandRotation = leftHand.transform.rotation.eulerAngles;
+                            float t = 40;
+
+                            bool isLeft = (leftHandRotation.x > 360 - t || leftHandRotation.x < t)
+                                        && (leftHandRotation.z > 360 - t || leftHandRotation.z < t);
+                            bool isRight = (leftHandRotation.x > 360 - t || leftHandRotation.x < t)
+                                        && (leftHandRotation.z > 180 - t || leftHandRotation.z < 180 + t);
+
+                            if (isLeft) // 왼쪽
+                            {
+                                float rot = targetGO.transform.rotation.eulerAngles.y - 30 * Time.deltaTime;
+                                targetGO.transform.rotation = Quaternion.Euler(0f, rot, 0f);
+                            }
+                            else if (isRight) // 오른쪽
+                            {
+                                float rot = targetGO.transform.rotation.eulerAngles.y + 30 * Time.deltaTime;
+                                targetGO.transform.rotation = Quaternion.Euler(0f, rot, 0f);
+                            }
+                            //else
+                            //{
+                            //    if (leftHandRotation.x > leftHandRotation.z)
+                            //        input.move += Vector2.up;
+                            //    else
+                            //        input.move += Vector2.down;
+
+                            //}
                         }
                         else modeTimer = changeModeTime;
 
@@ -261,7 +274,7 @@ public class GestureDetection_Demo : MonoBehaviour
                 }
 
             }
-            else
+            else if (leftGestureMode != LeftGestureMode.TargetHold)
             {
                 targetGO = null;
             }
@@ -277,7 +290,6 @@ public class GestureDetection_Demo : MonoBehaviour
             currentInterface = currentGesture.name;
             
             GestureLoggerLeft.text="LeftHand Current Gesture:"+currentGesture.name;
-            HandInterfaceRendering(currentGesture);
             // RelatedAssetsRendering();
             if (writeModeLogger)
             {
@@ -291,7 +303,7 @@ public class GestureDetection_Demo : MonoBehaviour
             //ould not put it in save, 
             //or fingerBones will have nth when you don't press space
             fingerBonesRight = new List<OVRBone>(skeletonRight.Bones);//added
-            if (debugMode && Input.GetKeyDown(KeyCode.F2))
+            if (debugMode && UnityEngine.Input.GetKeyDown(KeyCode.F2))
             {
                 SaveRight();
             }
@@ -527,21 +539,6 @@ public class GestureDetection_Demo : MonoBehaviour
             return null;
         }
         return goList.ToArray();
-    }
-
-    void HandInterfaceRendering(Gesture currentgesture)
-    {
-        string caseSwitch = currentgesture.name;
-
-        foreach(var ges in gesturedictLeft)
-            ChildrenRendering(ges.Value, false);
-        if(caseSwitch!=null)
-        {
-            if (gesturedictLeft.ContainsKey(caseSwitch)){
-                ChildrenRendering(gesturedictLeft[caseSwitch], true);
-            }
-        }
-        
     }
 
     void ChildrenRendering(GameObject parent, bool isEnabled){

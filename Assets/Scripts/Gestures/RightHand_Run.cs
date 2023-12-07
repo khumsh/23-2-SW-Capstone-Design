@@ -109,8 +109,8 @@ public class RightHand_Run : MonoBehaviour
 
                         }
 
-                        rotText.text = $"rot : {leftHandRotation}\n" +
-                            $"isLeft : {isLeft}, isRight : {isRight}";
+                        //rotText.text = $"rot : {leftHandRotation}\n" +
+                        //    $"isLeft : {isLeft}, isRight : {isRight}";
                     }
                     else
                         targetGO.transform.position += Vector3.forward * speed * Time.deltaTime;

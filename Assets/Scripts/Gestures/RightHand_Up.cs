@@ -21,7 +21,7 @@ public class RightHand_Up : MonoBehaviour
             {
                 foreach (GameObject t in GD.leftHandTargets)
                 {
-                    t.transform.position += Vector3.up * 0.3f * Time.deltaTime;
+                    t.GetComponent<ILeftGesture>().targetGO.transform.position += Vector3.forward * 0.3f * Time.deltaTime;
                 }
             }
             else if (targetGO != null)
