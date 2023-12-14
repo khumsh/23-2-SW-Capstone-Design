@@ -404,18 +404,15 @@ public class GestureDetection_Demo : MonoBehaviour
     {
         Gesture currentgesture = new Gesture();
         float currentMin = Mathf.Infinity;
-        int testk = 0;
         
         foreach (var gesture in gesturesLeft)
         {
-            //Debug.Log("debug mode is "+debugMode);
-            
             float sumDistance = 0;
             bool isDiscarded = false;
             float adaptivethreshold;
-            if (gesture.name == "Joystick"){
+            if (gesture.name == "Run"){
+                // Run은 손가락 움직일 때도 인식해야 하니까 임계값 좀 더 느슨하게
                 adaptivethreshold = 0.06f;
-                // 조이스틱은 손가락 잡고 움직일 때도 인식해야 하니까 임계값 좀 더 느슨하게
             }
             else {
                 adaptivethreshold = threshold;
@@ -423,7 +420,6 @@ public class GestureDetection_Demo : MonoBehaviour
             
             for (int i = 0; i < fingerBonesLeft.Count; i++)
             {
-                
                 Vector3 currentData = skeletonLeft.transform.InverseTransformPoint(fingerBonesLeft[i].Transform.position);
                 float distance = Vector3.Distance(currentData,gesture.fingerDatas[i]);
                 if (distance > adaptivethreshold)
@@ -439,7 +435,9 @@ public class GestureDetection_Demo : MonoBehaviour
                 currentMin = sumDistance;
                 currentgesture = gesture;
             }
+
         }
+
         //Debug.Log("Current Gesture:"+currentgesture.name);
         return currentgesture;
     }
