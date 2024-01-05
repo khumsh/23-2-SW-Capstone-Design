@@ -410,14 +410,16 @@ public class GestureDetection_Demo : MonoBehaviour
             float sumDistance = 0;
             bool isDiscarded = false;
             float adaptivethreshold;
-            if (gesture.name == "Run"){
-                // Run은 손가락 움직일 때도 인식해야 하니까 임계값 좀 더 느슨하게
-                adaptivethreshold = 0.06f;
-            }
-            else {
-                adaptivethreshold = threshold;
-            } 
-            
+            //if (gesture.name == "Run"){
+            //    // Run은 손가락 움직일 때도 인식해야 하니까 임계값 좀 더 느슨하게
+            //    adaptivethreshold = 0.06f;
+            //}
+            //else {
+            //    adaptivethreshold = threshold;
+            //}
+
+            adaptivethreshold = threshold;
+
             for (int i = 0; i < fingerBonesLeft.Count; i++)
             {
                 Vector3 currentData = skeletonLeft.transform.InverseTransformPoint(fingerBonesLeft[i].Transform.position);

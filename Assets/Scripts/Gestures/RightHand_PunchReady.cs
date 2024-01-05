@@ -31,14 +31,14 @@ public class RightHand_PunchReady : MonoBehaviour
 
         if (currentInterface == "PunchReady")
         {
-
-            anim = targetGO.GetComponent<Animator>();
-            anim.SetBool("PunchReady", true);
-
             if (targetGO != null && GD.targetName != "We")
             {
                 // 구현
                 if (!GD.thereAreBonesRight) return;
+
+                anim = targetGO.GetComponent<Animator>();
+                if (anim != null)
+                    anim.SetBool("PunchReady", true);
 
                 // 중지 시작 위치
                 Vector3 middlePos = GD.skeletonRight.Bones[9].Transform.position;
@@ -57,18 +57,20 @@ public class RightHand_PunchReady : MonoBehaviour
                 // 가속도 값을 사용하여 원하는 작업 수행
                 float speed = index_acceleration.magnitude * 0.01f;
 
-                if (speed > 0.05f)
+                if (speed > 0.15f)
                 {
                     if (GD.targetName == LeftHandTargets.HumanAvatar.ToString()
                         && targetGO.TryGetComponent(out StarterAssetsInputs input))
                     {
-                        anim.SetBool("Punch", true);
+                        if (anim != null)
+                            anim.SetBool("Punch", true);
                     }
 
                 }
                 else
                 {
-                    anim.SetBool("Punch", false);
+                    if (anim != null)
+                        anim.SetBool("Punch", false);
                 }
 
 
@@ -86,7 +88,8 @@ public class RightHand_PunchReady : MonoBehaviour
                 && targetGO.TryGetComponent(out StarterAssetsInputs input))
             {
                 anim = targetGO.GetComponent<Animator>();
-                anim.SetBool("PunchReady", false);
+                if (anim != null)
+                    anim.SetBool("PunchReady", false);
             }
             targetGO = null;
         }

@@ -67,7 +67,7 @@ public class RightHand_Run : MonoBehaviour
                 // 중지
                 middle_acceleration = (middle_currentVelocity - middle_previousVelocity) / deltaTime;
 
-                velocityText.text = $"Acceleration : {index_acceleration.magnitude}, {middle_acceleration.magnitude}";
+                //velocityText.text = $"Acceleration : {index_acceleration.magnitude}, {middle_acceleration.magnitude}";
 
                 // 가속도 값을 사용하여 원하는 작업 수행
                 float maxAccel = Mathf.Max(index_acceleration.magnitude, middle_acceleration.magnitude);
