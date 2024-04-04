@@ -57,15 +57,25 @@ public class RightHand_PunchReady : MonoBehaviour
                 // 가속도 값을 사용하여 원하는 작업 수행
                 float speed = index_acceleration.magnitude * 0.01f;
 
-                if (speed > 0.15f)
+                if (speed > 0.5f)
                 {
                     if (GD.targetName == LeftHandTargets.HumanAvatar.ToString()
                         && targetGO.TryGetComponent(out StarterAssetsInputs input))
                     {
                         if (anim != null)
-                            anim.SetBool("Punch", true);
-                    }
+                        {
+                            // punch anim
+                            anim.SetTrigger("Punch");
 
+                            GameObject punchTarget = FindAndLookAtEachOther();
+
+                            if (punchTarget != null)
+                            {
+                                Animator punchTargetAnim = punchTarget.GetComponent<Animator>();
+                                punchTargetAnim.SetTrigger("Stumble");
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -93,5 +103,33 @@ public class RightHand_PunchReady : MonoBehaviour
             }
             targetGO = null;
         }
+    }
+
+    private GameObject FindAndLookAtEachOther()
+    {
+        Collider[] hits = Physics.OverlapSphere(targetGO.transform.position, 3, LayerMask.GetMask("InteractObj"));
+
+        foreach (Collider hit in hits)
+        {
+            if (hit.CompareTag("Player") && hit.gameObject != targetGO)
+            {
+                // 타겟 오브젝트를 바라보게 합니다.
+                Vector3 directionToTarget = hit.transform.position - transform.position;
+                directionToTarget.y = 0; // Y축 회전은 고려하지 않음
+                Quaternion lookRotation = Quaternion.LookRotation(directionToTarget);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+
+                // 자신을 타겟 오브젝트가 바라보게 합니다.
+                Vector3 directionToSelf = transform.position - hit.transform.position;
+                directionToSelf.y = 0; // Y축 회전은 고려하지 않음
+                Quaternion lookRotationToSelf = Quaternion.LookRotation(directionToSelf);
+                hit.transform.rotation = Quaternion.Slerp(hit.transform.rotation, lookRotationToSelf, Time.deltaTime * 5f);
+
+                return hit.gameObject;
+            }
+            
+        }
+
+        return null;
     }
 }
