@@ -2,8 +2,10 @@ using OculusSampleFramework;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Jobs;
 using UnityEngine;
 
+public enum PunchState { PunchReady, Punch }
 public class RightHand_PunchReady : MonoBehaviour
 {
     [SerializeField] private GestureDetection_Demo GD;
@@ -22,7 +24,15 @@ public class RightHand_PunchReady : MonoBehaviour
 
     private float deltaTime; // 프레임 간의 시간 차이
 
+    private PunchState punchState = PunchState.PunchReady;
+
     Animator anim;
+
+    private void Awake()
+    {
+        if (targetGO != null)
+            anim = targetGO.GetComponent<Animator>();
+    }
 
     void Update()
     {
@@ -31,65 +41,82 @@ public class RightHand_PunchReady : MonoBehaviour
 
         if (currentInterface == "PunchReady")
         {
-            if (targetGO != null && GD.targetName != "We")
+            if (punchState == PunchState.PunchReady)
             {
-                // 구현
-                if (!GD.thereAreBonesRight) return;
-
-                anim = targetGO.GetComponent<Animator>();
-                if (anim != null)
-                    anim.SetBool("PunchReady", true);
-
-                // 중지 시작 위치
-                Vector3 middlePos = GD.skeletonRight.Bones[9].Transform.position;
-
-                // 현재 프레임의 속도와 위치를 갱신
-                index_currentVelocity = (middlePos - index_previousPosition) / Time.deltaTime;
-                index_currentPosition = middlePos;
-
-                // 프레임 간의 시간 차이
-                deltaTime = Time.deltaTime;
-
-                // 가속도 계산
-                // 검지
-                index_acceleration = (index_currentVelocity - index_previousVelocity) / deltaTime;
-
-                // 가속도 값을 사용하여 원하는 작업 수행
-                float speed = index_acceleration.magnitude * 0.01f;
-
-                if (speed > 0.5f)
+                if (targetGO != null && GD.targetName != "We")
                 {
-                    if (GD.targetName == LeftHandTargets.HumanAvatar.ToString()
-                        && targetGO.TryGetComponent(out StarterAssetsInputs input))
+                    // 구현
+                    if (!GD.thereAreBonesRight) return;
+
+                    if (anim == null) anim = targetGO.GetComponent<Animator>();
+                    if (anim != null && !anim.GetBool("PunchReady"))
                     {
-                        if (anim != null)
+                        anim.SetBool("PunchReady", true);
+                        anim.SetBool("Punch", false);
+                    }
+                        
+                    // 가속도 값을 사용하여 원하는 작업 수행
+                    float speed = GetFingerSpeed();
+                    Debug.Log($"PunchReadyState Speed : {speed}");
+                    if (speed > 0.65f)
+                    {
+                        if (GD.targetName == LeftHandTargets.HumanAvatar.ToString()
+                            && targetGO.TryGetComponent(out StarterAssetsInputs input))
                         {
-                            // punch anim
-                            anim.SetTrigger("Punch");
-
-                            GameObject punchTarget = FindAndLookAtEachOther();
-
-                            if (punchTarget != null)
+                            if (anim != null)
                             {
-                                Animator punchTargetAnim = punchTarget.GetComponent<Animator>();
-                                punchTargetAnim.SetTrigger("Stumble");
+                                // punch anim
+                                anim.SetBool("Punch", true);
+
+                                if (index_previousVelocity.sqrMagnitude != 0)
+                                {
+                                    GameObject punchTarget = FindAndLookAtEachOther();
+                                    if (punchTarget != null)
+                                    {
+                                        Animator punchTargetAnim = punchTarget.GetComponent<Animator>();
+                                        punchTargetAnim.SetTrigger("Stumble");
+                                    }
+                                }
+                                
+
+                                punchState = PunchState.Punch;
+
+                                Debug.Log($"Transition: PunchReady -> Punch");
                             }
                         }
                     }
+                    else
+                    {
+                        if (anim != null)
+                            anim.SetBool("Punch", false);
+                    }
+
+
+                    // 이전 프레임의 속도와 위치를 현재 값으로 갱신
+                    // 검지
+                    index_previousVelocity = index_currentVelocity;
+                    index_previousPosition = index_currentPosition;
+
                 }
-                else
+            }
+            else if (punchState == PunchState.Punch)
+            {
+                float speed = GetFingerSpeed();
+                Debug.Log($"PunchState Speed : {speed}");
+                if (speed < 0.35f)
                 {
-                    if (anim != null)
+                    if (anim != null && anim.GetBool("Punch"))
+                    {
                         anim.SetBool("Punch", false);
+                    }
+                    punchState = PunchState.PunchReady;
+                    Debug.Log($"Transition: Punch -> PunchReady");
                 }
 
-
-                // 이전 프레임의 속도와 위치를 현재 값으로 갱신
-                // 검지
                 index_previousVelocity = index_currentVelocity;
                 index_previousPosition = index_currentPosition;
-
             }
+            
         }
         else
         {
@@ -103,6 +130,28 @@ public class RightHand_PunchReady : MonoBehaviour
             }
             targetGO = null;
         }
+    }
+
+    private float GetFingerSpeed()
+    {
+        // 중지 시작 위치
+        Vector3 middlePos = GD.skeletonRight.Bones[9].Transform.position;
+
+        // 현재 프레임의 속도와 위치를 갱신
+        index_currentVelocity = (middlePos - index_previousPosition) / Time.deltaTime;
+        index_currentPosition = middlePos;
+
+        // 프레임 간의 시간 차이
+        deltaTime = Time.deltaTime;
+
+        // 가속도 계산
+        // 검지
+        index_acceleration = (index_currentVelocity - index_previousVelocity) / deltaTime;
+
+        // 가속도 값을 사용하여 원하는 작업 수행
+        float speed = index_acceleration.magnitude * 0.01f;
+
+        return speed;
     }
 
     private GameObject FindAndLookAtEachOther()
