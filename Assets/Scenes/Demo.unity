@@ -14189,7 +14189,7 @@ PrefabInstance:
     - target: {fileID: 4621455984174136126, guid: e19a4483d853ea14485ffcafc01b5511,
         type: 3}
       propertyPath: m_text
-      value: Scissors Demo - Hand Interface
+      value: SW Capstone Test
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e19a4483d853ea14485ffcafc01b5511, type: 3}
