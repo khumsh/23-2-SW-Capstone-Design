@@ -12,6 +12,7 @@ public class RightHand_PunchReady : MonoBehaviour
 
     public GameObject targetGO;
 
+    private string currentTargetName;
     private string currentInterface;
 
     private Vector3 index_previousVelocity; // 이전 프레임의 속도
@@ -36,25 +37,29 @@ public class RightHand_PunchReady : MonoBehaviour
 
     void Update()
     {
+        currentTargetName = GD.Recognize().name;
         currentInterface = GD.RecognizeRight().name;
         targetGO = GD.targetGO;
 
-        if (currentInterface == "PunchReady")
+        if (currentInterface == "PunchReady" && currentTargetName == "HumanAvatar")
         {
             if (punchState == PunchState.PunchReady)
             {
+                Debug.Log("0");
                 if (targetGO != null && GD.targetName != "We")
                 {
+                    Debug.Log("1");
                     // 구현
-                    if (!GD.thereAreBonesRight) return;
-
+                    //@!
+                    //if (!GD.thereAreBonesRight) return;
+                    Debug.Log("2");
                     if (anim == null) anim = targetGO.GetComponent<Animator>();
                     if (anim != null && !anim.GetBool("PunchReady"))
                     {
                         anim.SetBool("PunchReady", true);
                         anim.SetBool("Punch", false);
                     }
-                        
+
                     // 가속도 값을 사용하여 원하는 작업 수행
                     float speed = GetFingerSpeed();
                     Debug.Log($"PunchReadyState Speed : {speed}");
@@ -68,7 +73,8 @@ public class RightHand_PunchReady : MonoBehaviour
                                 // punch anim
                                 anim.SetBool("Punch", true);
 
-                                if (index_previousVelocity.sqrMagnitude != 0)
+                                //@!
+                                //if (index_previousVelocity.sqrMagnitude != 0)
                                 {
                                     GameObject punchTarget = FindAndLookAtEachOther();
                                     if (punchTarget != null)
@@ -134,6 +140,12 @@ public class RightHand_PunchReady : MonoBehaviour
 
     private float GetFingerSpeed()
     {
+        //@!
+        float _speed = 0;
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+            _speed = 1;
+        return _speed;
+
         // 중지 시작 위치
         Vector3 middlePos = GD.skeletonRight.Bones[9].Transform.position;
 
