@@ -23,12 +23,21 @@ public class RightHand_Pitching : MonoBehaviour
         {
             if (targetGO != null)
             {
+                var humanAvatar = targetGO.GetComponent<LeftHand_HumanAvatar>();
+                if (humanAvatar == null) return;
+
+                GameObject socketObj = humanAvatar.socketObject;
+                if (socketObj == null) return;
+
                 if (anim == null)
                     InitAnim();
 
-                if (anim != null)
+                if (anim != null && !anim.GetBool("Pitching"))
                 {
                     anim.SetBool("Pitching", true);
+                    StartCoroutine(AnimFalseCo());
+
+                    humanAvatar.avatarState = AvatarState.Pitching;
                 }
             }
         }
@@ -53,11 +62,21 @@ public class RightHand_Pitching : MonoBehaviour
                         rb.useGravity = true;
                         rb.freezeRotation = false;
                         rb.AddForce(Vector3.forward * 1000);
+                        rb.constraints = RigidbodyConstraints.None;
                     }
                 }
 
                 anim.SetBool("Pitching", false);
+
+                humanAvatar.avatarState = AvatarState.Idle;
             };
         }
+    }
+
+    IEnumerator AnimFalseCo()
+    {
+        yield return new WaitForSeconds(0.25f);
+        anim.SetBool("Pitching", false);
+
     }
 }

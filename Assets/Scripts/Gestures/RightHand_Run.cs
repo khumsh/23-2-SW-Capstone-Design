@@ -13,6 +13,7 @@ public class RightHand_Run : MonoBehaviour
 
     [SerializeField] private TextMeshPro velocityText;
 
+    private string currentTargetName;
     private string currentInterface;
 
     private Vector3 index_previousVelocity; // 이전 프레임의 속도
@@ -36,15 +37,23 @@ public class RightHand_Run : MonoBehaviour
     public TextMeshPro rotText;
     void Update()
     {
+        currentTargetName = GD.Recognize().name;
         currentInterface = GD.RecognizeRight().name;
         targetGO = GD.targetGO;
 
-        if (currentInterface == "Run")
+        if (currentInterface == "Run" && currentTargetName == "HumanAvatar")
         {
             if (targetGO != null && GD.targetName != "We")
             {
+
+
                 // 구현
                 if (!GD.thereAreBonesRight) return;
+
+                var humanAvatar = targetGO.GetComponent<LeftHand_HumanAvatar>();
+                if (humanAvatar == null) return;
+
+                if (humanAvatar.avatarState != AvatarState.Idle && humanAvatar.avatarState != AvatarState.Run) return;
 
                 // 검지, 중지 끝 위치
                 Vector3 indexPos = GD.skeletonRight.Bones[8].Transform.position;

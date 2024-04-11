@@ -6522,6 +6522,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1051627503}
   socketObject: {fileID: 0}
+  avatarState: 0
 --- !u!114 &1051627512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6785,6 +6786,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1074072900}
   socketObject: {fileID: 0}
+  avatarState: 0
 --- !u!114 &1074072909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8367,6 +8369,64 @@ MonoBehaviour:
     onRecognized:
       m_PersistentCalls:
         m_Calls: []
+  - name: Pitching
+    fingerDatas:
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    - {x: -0.020069014, y: -0.011554003, z: -0.010497001}
+    - {x: -0.03595844, y: -0.019157732, z: -0.028028462}
+    - {x: -0.058801606, y: -0.041580416, z: -0.03372924}
+    - {x: -0.08576245, y: -0.059166968, z: -0.02344362}
+    - {x: -0.09599624, y: -0.007316463, z: -0.023550672}
+    - {x: -0.13376369, y: -0.009944128, z: -0.025828812}
+    - {x: -0.1578872, y: -0.012685204, z: -0.026928311}
+    - {x: -0.09564658, y: -0.0025431595, z: -0.0017258931}
+    - {x: -0.12743118, y: -0.03133175, z: 0.00019239052}
+    - {x: -0.11663236, y: -0.056626614, z: -0.0013986221}
+    - {x: -0.088693745, y: -0.0065292865, z: 0.017465238}
+    - {x: -0.124957606, y: -0.019942293, z: 0.022536416}
+    - {x: -0.14950731, y: -0.029484928, z: 0.026057374}
+    - {x: -0.03407357, y: -0.009419825, z: 0.022998586}
+    - {x: -0.07789583, y: -0.013691165, z: 0.03505404}
+    - {x: -0.107411996, y: -0.012614532, z: 0.043502413}
+    - {x: -0.12647492, y: -0.012918107, z: 0.050506994}
+    - {x: -0.09856582, y: -0.06456541, z: -0.0031177863}
+    - {x: -0.18022497, y: -0.011273113, z: -0.026390834}
+    - {x: -0.09558051, y: -0.06958802, z: -0.005066741}
+    - {x: -0.17278533, y: -0.036284167, z: 0.028570138}
+    - {x: -0.14744876, y: -0.010372066, z: 0.05648567}
+    onRecognized:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: Pickup
+    fingerDatas:
+    - {x: -0.0000000056512253, y: 0.000000009733826, z: -0.0000000013385667}
+    - {x: -0.0000000056512253, y: 0.000000009733826, z: -0.0000000013385667}
+    - {x: -0.020068988, y: -0.011554008, z: -0.010496996}
+    - {x: -0.035958443, y: -0.019157682, z: -0.02802846}
+    - {x: -0.056808207, y: -0.04390448, z: -0.031185951}
+    - {x: -0.082422204, y: -0.06592463, z: -0.030182209}
+    - {x: -0.095996216, y: -0.0073164646, z: -0.02355067}
+    - {x: -0.10987626, y: -0.04260946, z: -0.0230766}
+    - {x: -0.116738796, y: -0.06590518, z: -0.022138191}
+    - {x: -0.095646575, y: -0.0025431856, z: -0.0017259158}
+    - {x: -0.12729326, y: -0.0315453, z: -0.0020220405}
+    - {x: -0.14767322, y: -0.05008266, z: -0.0019683146}
+    - {x: -0.08869376, y: -0.006529309, z: 0.017465228}
+    - {x: -0.12460399, y: -0.021369, z: 0.02077172}
+    - {x: -0.14894193, y: -0.031775933, z: 0.023117926}
+    - {x: -0.03407355, y: -0.009419819, z: 0.022998592}
+    - {x: -0.07789582, y: -0.0136911515, z: 0.035054054}
+    - {x: -0.10763322, y: -0.019241935, z: 0.040403686}
+    - {x: -0.12658739, y: -0.024959872, z: 0.044941794}
+    - {x: -0.09613504, y: -0.08460102, z: -0.038510364}
+    - {x: -0.12582015, y: -0.08626857, z: -0.020108411}
+    - {x: -0.16846883, y: -0.06392102, z: -0.0011458431}
+    - {x: -0.17199725, y: -0.0395853, z: 0.024488367}
+    - {x: -0.14800096, y: -0.028355185, z: 0.04841442}
+    onRecognized:
+      m_PersistentCalls:
+        m_Calls: []
   currentGesture_stable_Left:
     name: 
     fingerDatas: []
@@ -9084,7 +9144,7 @@ PrefabInstance:
     - target: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.07
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544,
         type: 3}
@@ -13655,7 +13715,7 @@ PrefabInstance:
     - target: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.19
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544,
         type: 3}
@@ -13665,7 +13725,7 @@ PrefabInstance:
     - target: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.31
+      value: 9.95
       objectReference: {fileID: 0}
     - target: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544,
         type: 3}
@@ -14895,15 +14955,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4935240531098310, guid: ec3e8f3ed27e2244caaedaf589590a03, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.35
+      value: -1.81
       objectReference: {fileID: 0}
     - target: {fileID: 4935240531098310, guid: ec3e8f3ed27e2244caaedaf589590a03, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.1
+      value: -2.21
       objectReference: {fileID: 0}
     - target: {fileID: 4935240531098310, guid: ec3e8f3ed27e2244caaedaf589590a03, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.208
+      value: 3.44
       objectReference: {fileID: 0}
     - target: {fileID: 4935240531098310, guid: ec3e8f3ed27e2244caaedaf589590a03, type: 3}
       propertyPath: m_LocalRotation.w
@@ -15144,6 +15204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1051627503}
   socketObject: {fileID: 0}
+  avatarState: 0
 --- !u!1001 &2113015989
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -128,19 +128,19 @@ public class GestureDetection_Demo : MonoBehaviour
     void Update()
     {
         //@!
-        Gesture currentGesture2 = Recognize();
+        //Gesture currentGesture2 = Recognize();
 
-        if (leftHandTargetsDic.ContainsKey(currentGesture2.name))
-        {
-            targetName = leftHandTargetsDic[currentGesture2.name].targetName;
-            targetGO = leftHandTargetsDic[currentGesture2.name].targetGO;
-        }
+        //if (leftHandTargetsDic.ContainsKey(currentGesture2.name))
+        //{
+        //    targetName = leftHandTargetsDic[currentGesture2.name].targetName;
+        //    targetGO = leftHandTargetsDic[currentGesture2.name].targetGO;
+        //}
 
-        Gesture currentGestureRight2 = RecognizeRight();
+        //Gesture currentGestureRight2 = RecognizeRight();
 
-        currentInterface = currentGestureRight2.name;
+        //currentInterface = currentGestureRight2.name;
 
-        return;
+        //return;
         if (!thereAreBonesLeft)
         {
             FindBonesLeft();
@@ -417,11 +417,11 @@ public class GestureDetection_Demo : MonoBehaviour
     public Gesture Recognize()
     {
         //@!
-        Gesture tempGesture = new Gesture()
-        {
-            name = "HumanAvatar"
-        };
-        return tempGesture;
+        //Gesture tempGesture = new Gesture()
+        //{
+        //    name = "HumanAvatar"
+        //};
+        //return tempGesture;
 
         Gesture currentgesture = new Gesture();
         float currentMin = Mathf.Infinity;
@@ -468,21 +468,21 @@ public class GestureDetection_Demo : MonoBehaviour
     public Gesture RecognizeRight()
     {
         //@!
-        Gesture tempGesture = new Gesture();
-        if (Input.GetKey(KeyCode.Alpha0))
-        {
-            tempGesture.name = "PunchReady";
-        }
-        else if (Input.GetKey(KeyCode.Alpha8))
-        {
-            tempGesture.name = "Pickup";
-        }
-        else if (Input.GetKey(KeyCode.Alpha7))
-        {
-            tempGesture.name = "Pitching";
-        }
+        //Gesture tempGesture = new Gesture();
+        //if (Input.GetKey(KeyCode.Alpha0))
+        //{
+        //    tempGesture.name = "PunchReady";
+        //}
+        //else if (Input.GetKey(KeyCode.Alpha8))
+        //{
+        //    tempGesture.name = "Pickup";
+        //}
+        //else if (Input.GetKey(KeyCode.Alpha7))
+        //{
+        //    tempGesture.name = "Pitching";
+        //}
 
-        return tempGesture;
+        //return tempGesture;
         
         Gesture currentgesture = new Gesture();
         float currentMin = Mathf.Infinity;

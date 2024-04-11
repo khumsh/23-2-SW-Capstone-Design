@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+public enum AvatarState { Idle, Run, Punch, Pickup, Pitching }
 public class LeftHand_HumanAvatar : MonoBehaviour, ILeftGesture
 {
     public GameObject target;
@@ -26,5 +27,7 @@ public class LeftHand_HumanAvatar : MonoBehaviour, ILeftGesture
     }
 
     public GameObject socketObject;
+
+    public AvatarState avatarState = AvatarState.Idle;
     
 }

@@ -23,12 +23,22 @@ public class RightHand_Pickup : MonoBehaviour
         {
             if (targetGO != null) 
             {
+                var humanAvatar = targetGO.GetComponent<LeftHand_HumanAvatar>();
+                if (humanAvatar == null) return;
+
+
+                GameObject socketObj = humanAvatar.socketObject;
+                if (socketObj != null) return;
+
                 if (anim == null)
                     InitAnim();
 
-                if (anim != null)
+                if (anim != null && !anim.GetBool("Pickup"))
                 {
                     anim.SetBool("Pickup", true);
+                    StartCoroutine(AnimFalseCo());
+
+                    humanAvatar.avatarState = AvatarState.Pickup;
                 }
             }
         }
@@ -60,7 +70,6 @@ public class RightHand_Pickup : MonoBehaviour
                     if (rightHandSocket != null && humanAvatar.socketObject == null)
                     {
                         hitGO.transform.SetParent(rightHandSocket);
-                        hitGO.transform.localPosition = Vector3.zero;
                         Rigidbody rb = hitGO.GetComponent<Rigidbody>();
                         if (rb != null) 
                         {
@@ -68,19 +77,30 @@ public class RightHand_Pickup : MonoBehaviour
                             rb.velocity = Vector3.zero;
                             rb.rotation = Quaternion.identity;
                             rb.freezeRotation = true;
+                            rb.constraints = RigidbodyConstraints.FreezeAll;
                         }
                         humanAvatar.socketObject = hitGO;
+                        hitGO.transform.localPosition = Vector3.zero;
                     }
                     else
-                        Debug.Log("rightHandSocket is null");
+                        Debug.LogError("rightHandSocket is null");
+
+                    humanAvatar.avatarState = AvatarState.Idle;
                 }
                 else
                 {
-                    Debug.Log("hitGO null");
+                    Debug.LogWarning("hitGO null");
                 }
 
                 anim.SetBool("Pickup", false);
             };
         }
+    }
+
+    IEnumerator AnimFalseCo()
+    {
+        yield return new WaitForSeconds(0.25f);
+        anim.SetBool("Pickup", false);
+
     }
 }

@@ -51,7 +51,7 @@ public class RightHand_PunchReady : MonoBehaviour
                     Debug.Log("1");
                     // 구현
                     //@!
-                    //if (!GD.thereAreBonesRight) return;
+                    if (!GD.thereAreBonesRight) return;
                     Debug.Log("2");
                     if (anim == null) anim = targetGO.GetComponent<Animator>();
                     if (anim != null && !anim.GetBool("PunchReady"))
@@ -74,7 +74,7 @@ public class RightHand_PunchReady : MonoBehaviour
                                 anim.SetBool("Punch", true);
 
                                 //@!
-                                //if (index_previousVelocity.sqrMagnitude != 0)
+                                if (index_previousVelocity.sqrMagnitude != 0)
                                 {
                                     GameObject punchTarget = FindAndLookAtEachOther();
                                     if (punchTarget != null)
@@ -141,10 +141,10 @@ public class RightHand_PunchReady : MonoBehaviour
     private float GetFingerSpeed()
     {
         //@!
-        float _speed = 0;
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-            _speed = 1;
-        return _speed;
+        //float _speed = 0;
+        //if (Input.GetKeyDown(KeyCode.Alpha9))
+        //    _speed = 1;
+        //return _speed;
 
         // 중지 시작 위치
         Vector3 middlePos = GD.skeletonRight.Bones[9].Transform.position;
