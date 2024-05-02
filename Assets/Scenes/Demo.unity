@@ -8427,6 +8427,21 @@ MonoBehaviour:
     onRecognized:
       m_PersistentCalls:
         m_Calls: []
+  GestureDatasLeft:
+  - {fileID: 11400000, guid: 8183ebcc818f70041a4d2592be4fba9a, type: 2}
+  - {fileID: 11400000, guid: 68c829d6cbf61614185ec64564446666, type: 2}
+  - {fileID: 11400000, guid: e140c14fb34876e4e80962ab33eea463, type: 2}
+  - {fileID: 11400000, guid: 6ffb2d8197b536a42b06811e6c775d6f, type: 2}
+  - {fileID: 11400000, guid: b84a82521682f4b4c94ab61f3d04d88b, type: 2}
+  - {fileID: 11400000, guid: c5c76e759da08e84d8f5778836e3476e, type: 2}
+  GestureDatasRight:
+  - {fileID: 11400000, guid: ea1abe20742f73642806dd8dc3a345e0, type: 2}
+  - {fileID: 11400000, guid: c35c37db9a1e1224ca7202034675ad70, type: 2}
+  - {fileID: 11400000, guid: 29909945570613d4e99ba94c21374300, type: 2}
+  - {fileID: 11400000, guid: 5801914349da049479dee179f1075b95, type: 2}
+  - {fileID: 11400000, guid: 3b9e35eb4a3e19f4da36745b5a5e6adc, type: 2}
+  - {fileID: 11400000, guid: 4d9c5b2a5ecabed44933330861c6e8cd, type: 2}
+  - {fileID: 11400000, guid: 6d3bde2f34782eb47945453e77d31851, type: 2}
   currentGesture_stable_Left:
     name: 
     fingerDatas: []

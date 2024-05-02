@@ -33,8 +33,16 @@ public class GestureDetection_Demo : MonoBehaviour
     public float threshold = 0.02f;// too small, will find nothing (too strict)
     public OVRSkeleton skeletonLeft;
     public OVRSkeleton skeletonRight;
+
+    // ---이제 안씀---
     public List<Gesture> gesturesLeft;
     public List<Gesture> gesturesRight;
+    // ---------------
+
+    // 테스트를 위해 추가
+    public List<GestureSO> GestureDatasLeft;
+    public List<GestureSO> GestureDatasRight;
+
     public Gesture currentGesture_stable_Left;
     public Gesture currentGesture_stable_Right;
     public bool debugMode = true;
@@ -425,9 +433,12 @@ public class GestureDetection_Demo : MonoBehaviour
 
         Gesture currentgesture = new Gesture();
         float currentMin = Mathf.Infinity;
-        
-        foreach (var gesture in gesturesLeft)
+
+        //foreach (var gesture in gesturesLeft)
+        foreach (var gestureSO in GestureDatasLeft)
         {
+            var gesture = gestureSO.gesture;
+
             float sumDistance = 0;
             bool isDiscarded = false;
             float adaptivethreshold;
@@ -487,8 +498,10 @@ public class GestureDetection_Demo : MonoBehaviour
         Gesture currentgesture = new Gesture();
         float currentMin = Mathf.Infinity;
 
-        foreach (var gesture in gesturesRight)
+        //foreach (var gesture in gesturesRight)
+        foreach (var gestureSO in GestureDatasRight)
         {
+            var gesture = gestureSO.gesture;
             //Debug.Log("debug mode is "+debugMode);
 
             float sumDistance = 0;
