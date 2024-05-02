@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 783a99df755da0e4b8f032e8c15637ac, type: 3}
   m_Name: Gesture_Right_Run
   m_EditorClassIdentifier: 
-  handType: 0
+  handType: 1
   gesture:
     name: Run
     fingerDatas:

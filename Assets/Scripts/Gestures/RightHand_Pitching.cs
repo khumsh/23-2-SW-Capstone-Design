@@ -61,7 +61,7 @@ public class RightHand_Pitching : MonoBehaviour
                     {
                         rb.useGravity = true;
                         rb.freezeRotation = false;
-                        rb.AddForce(Vector3.forward * 1000);
+                        rb.AddForce(Vector3.right * 5000);
                         rb.constraints = RigidbodyConstraints.None;
                     }
                 }
